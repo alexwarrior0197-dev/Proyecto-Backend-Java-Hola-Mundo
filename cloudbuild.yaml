@@ -1,0 +1,39 @@
+steps:
+  # Paso 1: Construir imagen Docker desde el Dockerfile
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/rich-chimera-479916-f9/java-backend-repo/java-hello-world:$SHORT_SHA",
+        "."
+      ]
+
+  # Paso 2: Subir la imagen a Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/rich-chimera-479916-f9/java-backend-repo/java-hello-world:$SHORT_SHA"
+      ]
+
+  # Paso 3: Desplegar automáticamente a Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      [
+        "run",
+        "deploy",
+        "java-hello-world",
+        "--image",
+        "us-central1-docker.pkg.dev/rich-chimera-479916-f9/java-backend-repo/java-hello-world:$SHORT_SHA",
+        "--region",
+        "us-central1",
+        "--platform",
+        "managed",
+        "--allow-unauthenticated"
+      ]
+
+images:
+  - "us-central1-docker.pkg.dev/rich-chimera-479916-f9/java-backend-repo/java-hello-world:$SHORT_SHA"
+
