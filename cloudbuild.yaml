@@ -37,3 +37,5 @@ steps:
 images:
   - "us-central1-docker.pkg.dev/rich-chimera-479916-f9/java-backend-repo/java-hello-world:$SHORT_SHA"
 
+options:
+  logging: CLOUD_LOGGING_ONLY
